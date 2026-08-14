@@ -4,7 +4,7 @@ A high-fidelity, organic "Rehoboam" style neural HUD for Flutter. Features organ
 
 | Screenshot | Demo |
 | :---: | :---: |
-| ![Screenshot](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/main/assets/Screenshot.png) | ![Demo](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/main/assets/rehoboam_screen_record.gif) |
+| ![Screenshot](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/main/assets/screenshot.png) | ![Demo](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/main/assets/rehoboam_screen_record.gif) |
 
 ## Features
 

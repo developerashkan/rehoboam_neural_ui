@@ -1,13 +1,12 @@
 name: rehoboam_neural_ui
 description: A high-fidelity "Rehoboam" style neural HUD for Flutter. Features organic particulate animations, 3D Earth globe transformation, and geographic data mapping.
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/developerashkan/rehoboam_neural_ui
 repository: https://github.com/developerashkan/rehoboam_neural_ui
-
 screenshots:
-  - description: 'High-fidelity "Rehoboam" style neural HUD.'
-    path: assets/Screenshot.png
-  - description: 'Animated "Rehoboam" style neural HUD demo.'
+  - description: 'Main Rehoboam neural HUD visualization'
+    path: assets/screenshot.png
+  - description: 'Animated demo of the Rehoboam neural HUD transformation'
     path: assets/rehoboam_screen_record.gif
 
 environment:

@@ -1,3 +1,8 @@
+## 0.0.7
+
+* Fix: Rename `Screenshot.png` to `screenshot.png` and update `pubspec.yaml` to ensure thumbnail is correctly identified by pub.dev.
+* Update: Refine screenshot descriptions for better search results.
+
 ## 0.0.6
 
 * Update: Package description to reflect 3D Earth globe transformation capabilities.
