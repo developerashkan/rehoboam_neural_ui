@@ -1,0 +1,22 @@
+name: rehoboam_neural_ui
+description: A high-fidelity "Rehoboam" style neural HUD and data-visualization widget for Flutter. Features organic particulate animations and 2D-projected geographic mapping.
+version: 0.0.1
+homepage: https://github.com/developerashkan/voice_agent_1.1.1
+repository: https://github.com/developerashkan/voice_agent_1.1.1/tree/master/rehoboam_neural_ui
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dot_globe: ^0.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

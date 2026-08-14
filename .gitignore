@@ -1,0 +1,77 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+.vscode/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart related
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+lib/generated/
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Android related
+**/android/**.iml
+**/android/**.ipr
+**/android/**.iws
+**/android/app/src/main/res/values/strings.xml
+**/android/local.properties
+**/android/key.properties
+**/android/app/google-services.json
+**/android/.gradle
+**/android/build
+**/android/captures
+**/android/gradlew
+**/android/gradlew.bat
+**/android/generated
+**/android/gradle
+**/android/app/src/main/res/drawable-*/
+**/android/app/src/main/res/mipmap-*/
+
+# iOS related
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.xcworkspace/
+**/ios/**/xcuserdata/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/Config/
+**/ios/**/Frameworks/
+**/ios/**/Generated/
+**/ios/**/Flutter/Flutter.framework
+**/ios/**/Flutter/Flutter.podspec
+**/ios/**/Flutter/Generated.xcconfig
+**/ios/**/Flutter/app.flx
+**/ios/**/Flutter/app.zip
+**/ios/**/Flutter/flutter_assets.zip
+**/ios/**/Flutter/App.framework
+**/ios/**/App.framework
+
+# Artifacts
+.artifacts/
