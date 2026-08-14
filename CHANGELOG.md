@@ -1,3 +1,8 @@
+## 0.0.4
+
+* Fix: Use Markdown table in README for side-by-side layout (more compatible with pub.dev sanitizer).
+* Note: GIF in README requires a fast connection due to its size (11MB). Pub.dev carousel/search thumbnails have a 4MB limit.
+
 ## 0.0.3
 
 * Fix: Display screenshot and demo side-by-side in README.
