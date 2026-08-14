@@ -1,3 +1,8 @@
+## 0.0.6
+
+* Update: Package description to reflect 3D Earth globe transformation capabilities.
+* Fix: Ensure screenshots are correctly linked in `pubspec.yaml` for search indexing.
+
 ## 0.0.5
 
 * Fix: Include both static screenshot and animated GIF (compressed to <4MB) in `pubspec.yaml` screenshots.
