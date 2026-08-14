@@ -30,6 +30,7 @@ lib/generated_plugin_registrant.dart
 app.*.symbols
 
 # Android related
+**/android/.kotlin/
 **/android/**.iml
 **/android/**.ipr
 **/android/**.iws
