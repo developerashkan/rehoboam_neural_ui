@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Fix: Include both static screenshot and animated GIF (compressed to <4MB) in `pubspec.yaml` screenshots.
+* Improve: Refine screenshot descriptions for better search indexing.
+
 ## 0.0.4
 
 * Fix: Use Markdown table in README for side-by-side layout (more compatible with pub.dev sanitizer).
