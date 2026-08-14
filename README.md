@@ -2,6 +2,8 @@
 
 A high-fidelity, organic "Rehoboam" style neural HUD and data-visualization widget for Flutter.
 
+![Screenshot](assets/Screenshot.png)
+
 ![Demo](assets/rehoboam_screen_record.gif)
 
 ## Features

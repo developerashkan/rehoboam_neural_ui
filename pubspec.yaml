@@ -4,6 +4,12 @@ version: 0.0.1
 homepage: https://github.com/developerashkan/rehoboam_neural_ui
 repository: https://github.com/developerashkan/rehoboam_neural_ui
 
+screenshots:
+  - description: 'High-fidelity "Rehoboam" style neural HUD with organic particulate animations.'
+    path: assets/Screenshot.png
+  - description: '3D projected geographic mapping on a 2D rotating globe HUD.'
+    path: assets/rehoboam_screen_record.gif
+
 environment:
   sdk: ">=3.4.0 <4.0.0"
   flutter: ">=3.22.0"
