@@ -599,14 +599,20 @@ class NeuralSparklinePainter extends CustomPainter {
       _lineShader = ui.Gradient.linear(
         Offset(mirror ? size.width : 0, 0),
         Offset(mirror ? 0 : size.width, 0),
-        [palette.secondary, palette.accent],
+        palette.strokeColors,
+        [
+          for (var i = 0; i < palette.strokeColors.length; i++)
+            i / (palette.strokeColors.length - 1),
+        ],
       );
+      final areaColor =
+          palette.isLiquid ? palette.strokeAt(0.6) : palette.accent;
       _areaShader = ui.Gradient.linear(
         Offset.zero,
         Offset(0, size.height),
         [
-          palette.accent.withValues(alpha: palette.isDark ? 0.34 : 0.24),
-          palette.accent.withValues(alpha: 0),
+          areaColor.withValues(alpha: palette.isDark ? 0.3 : 0.18),
+          areaColor.withValues(alpha: 0),
         ],
       );
     }

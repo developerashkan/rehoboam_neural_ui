@@ -376,6 +376,8 @@ class NeuralGaugePainter extends CustomPainter {
         final tf = i / ticks;
         final a = start + sweep * tf;
         final major = i % 5 == 0;
+        // The liquid design keeps only the major ticks: calmer, purer.
+        if (palette.isLiquid && !major) continue;
         final len = sw * (major ? 0.7 : 0.4);
         final lit = tf <= f + 1e-9 && f > 0;
         _stroke
@@ -394,7 +396,8 @@ class NeuralGaugePainter extends CustomPainter {
       final valueSweep = sweep * f;
       final tc = thresholdColor(value.value);
       final glowK = palette.glowIntensity;
-      final glowColor = tc ?? palette.accent;
+      final glowColor =
+          tc ?? (palette.isLiquid ? palette.strokeAt(f) : palette.accent);
       if (glowK > 0) {
         _stroke
           ..strokeWidth = sw * 1.8
@@ -412,7 +415,7 @@ class NeuralGaugePainter extends CustomPainter {
           _shader = SweepGradient(
             startAngle: 0,
             endAngle: sweep,
-            colors: [palette.secondary, palette.accent],
+            colors: palette.strokeColors,
             transform: GradientRotation(start),
           ).createShader(rect);
         }

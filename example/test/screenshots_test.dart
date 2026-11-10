@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:dot_globe/dot_globe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rehoboam_neural_ui/rehoboam_neural_ui.dart';
 import 'package:rehoboam_neural_ui_example/demos.dart';
 import 'package:rehoboam_neural_ui_example/main.dart';
 
@@ -31,6 +32,7 @@ Future<void> _frames(WidgetTester tester, Duration d) async {
 }
 
 const _cards = {
+  'liquid': LiquidDemo,
   'hero': HeroDemo,
   'orb': OrbDemo,
   'gauge': GaugeDemo,
@@ -77,46 +79,105 @@ void main() {
     if (!_capture) return;
     await loadRealFonts(tester);
     await tester.runAsync(DotGlobeGeometry.load);
+    await tester.runAsync(NeuralShaders.precache);
     addTearDown(tester.view.reset);
 
-    // Desktop, dark, full page (also the source of the README tiles).
-    await _fullPage(tester, GalleryApp(key: UniqueKey(), today: _today), 1440);
-    await _frames(tester, const Duration(milliseconds: 1800));
-    await _cardRects(tester, 'dark');
-    await capturePng(tester, _key, '$_out/gallery_dark.png', pixelRatio: 1.5);
+    Future<void> screen(Widget app, String name, Size size,
+        {double ratio = 1.5, Future<void> Function()? before}) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = size;
+      await tester.pumpWidget(RepaintBoundary(key: _key, child: app));
+      await _frames(tester, const Duration(milliseconds: 400));
+      if (before != null) await before();
+      await _frames(tester, const Duration(milliseconds: 600));
+      await capturePng(tester, _key, '$_out/$name.png', pixelRatio: ratio);
+    }
 
-    // Desktop, light, Earth mode on the hero.
-    await _fullPage(
-        tester,
-        GalleryApp(
-            key: UniqueKey(), today: _today, initialMode: ThemeMode.light),
-        1440);
-    await tester.tap(find.text('Earth'));
-    await _frames(tester, const Duration(milliseconds: 3600));
-    await _cardRects(tester, 'light');
-    await capturePng(tester, _key, '$_out/gallery_light.png', pixelRatio: 1.5);
+    // 1. The liquid orb, presented like an app icon (README hero still).
+    await screen(const _OrbHero(), 'liquid_orb', const Size(1200, 560));
 
-    // Phones.
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    await tester.pumpWidget(RepaintBoundary(
-        key: _key, child: GalleryApp(key: UniqueKey(), today: _today)));
-    await _frames(tester, const Duration(milliseconds: 1800));
-    await capturePng(tester, _key, '$_out/phone_dark.png', pixelRatio: 3);
+    // 2. Assistant: a finished tool + generated-UI conversation.
+    Future<void> ask(String q) async {
+      await tester.tap(find.text(q).first);
+      await _frames(tester, const Duration(seconds: 7));
+    }
 
-    await tester.pumpWidget(RepaintBoundary(
-      key: _key,
-      child: GalleryApp(
+    await screen(
+      GalleryApp(key: UniqueKey(), today: _today),
+      'assistant_dark',
+      const Size(1440, 940),
+      before: () => ask('Server dashboard'),
+    );
+    await screen(
+      GalleryApp(key: UniqueKey(), today: _today, initialMode: ThemeMode.light),
+      'phone_assistant_light',
+      const Size(390, 844),
+      ratio: 3,
+      before: () => ask('Weather in Lisbon'),
+    );
+
+    // 3. HUD: the model flew the globe to Tokyo.
+    await screen(
+      GalleryApp(key: UniqueKey(), today: _today, initialTab: GalleryTab.hud),
+      'hud_earth_dark',
+      const Size(1440, 940),
+      before: () async {
+        await tester.tap(find.text('Show me Tokyo'));
+        await _frames(tester, const Duration(seconds: 8));
+      },
+    );
+    await screen(
+      GalleryApp(
         key: UniqueKey(),
         today: _today,
+        initialTab: GalleryTab.hud,
         initialMode: ThemeMode.light,
+      ),
+      'phone_hud_light',
+      const Size(390, 844),
+      ratio: 3,
+    );
+
+    // 4. Every widget, liquid (dark, light) and neon, full page.
+    for (final (name, mode, design) in [
+      ('gallery_dark', ThemeMode.dark, NeuralDesign.liquid),
+      ('gallery_light', ThemeMode.light, NeuralDesign.liquid),
+      ('gallery_neon', ThemeMode.dark, NeuralDesign.neon),
+    ]) {
+      await _fullPage(
+        tester,
+        GalleryApp(
+          key: UniqueKey(),
+          today: _today,
+          initialMode: mode,
+          initialDesign: design,
+          initialTab: GalleryTab.widgets,
+        ),
+        1440,
+      );
+      if (name != 'gallery_neon') {
+        await tester.tap(find.text('Earth'));
+      }
+      await _frames(tester, const Duration(milliseconds: 3600));
+      await _cardRects(tester, name.replaceFirst('gallery_', ''));
+      await capturePng(tester, _key, '$_out/$name.png', pixelRatio: 1.25);
+    }
+
+    // 5. Right-to-left phone.
+    await screen(
+      GalleryApp(
+        key: UniqueKey(),
+        today: _today,
+        initialTab: GalleryTab.widgets,
         initialRtl: true,
       ),
-    ));
-    await _frames(tester, const Duration(milliseconds: 300));
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -560));
-    await _frames(tester, const Duration(milliseconds: 1800));
-    await capturePng(tester, _key, '$_out/phone_light_rtl.png', pixelRatio: 3);
+      'phone_widgets_rtl',
+      const Size(390, 844),
+      ratio: 3,
+      before: () async {
+        await tester.drag(find.byType(CustomScrollView), const Offset(0, -560));
+      },
+    );
 
     await tester.pumpWidget(const SizedBox());
     await _frames(tester, const Duration(milliseconds: 100));
@@ -126,6 +187,7 @@ void main() {
     if (!_capture) return;
     await loadRealFonts(tester);
     await tester.runAsync(DotGlobeGeometry.load);
+    await tester.runAsync(NeuralShaders.precache);
     addTearDown(tester.view.reset);
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1200, 675);
@@ -160,4 +222,45 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await _frames(tester, const Duration(milliseconds: 100));
   });
+}
+
+/// The liquid orb as an app-icon tile, flanked by palettes.
+class _OrbHero extends StatelessWidget {
+  const _OrbHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: galleryTheme(Brightness.light),
+      home: Scaffold(
+        backgroundColor: const Color(0xFFE9E9EE),
+        body: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (final (p, size) in const [
+                (LiquidPalette.aurora, 150.0),
+                (LiquidPalette.ocean, 190.0),
+                (LiquidPalette.graphite, 300.0),
+                (LiquidPalette.ember, 190.0),
+                (LiquidPalette.orchid, 150.0),
+              ])
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: NeuralLiquidOrb(
+                    size: size,
+                    tile: true,
+                    palette: p,
+                    state: NeuralOrbState.speaking,
+                    level: 0.4,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

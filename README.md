@@ -1,251 +1,259 @@
 # rehoboam_neural_ui
 
 [![pub package](https://img.shields.io/pub/v/rehoboam_neural_ui.svg)](https://pub.dev/packages/rehoboam_neural_ui)
-[![platforms](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web%20%7C%20macos%20%7C%20windows%20%7C%20linux-0aa)](#platforms)
+[![platforms](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web%20%7C%20macos%20%7C%20windows%20%7C%20linux-555)](#platforms)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Sci-fi **neural UI** for Flutter. The organic *Rehoboam* HUD ring and 3D globe,
-plus nine widgets for real apps: an assistant orb, voice visuals, KPI gauges,
-glowing charts, an activity heatmap, glass cards, a biometric scan ring,
-presence avatars and a living network background.
+**AI-native UI for Flutter.** A pure, liquid-glass design system, the organic
+*Rehoboam* HUD with its 3D globe, and an AI layer that connects to **Claude,
+Gemini, OpenAI-compatible APIs, Genkit flows or any model**, with tools,
+generative UI, voice and a complete chat view.
 
-Pure Flutter (no shaders, no platform code), themed from your `ColorScheme`
-in light and dark, right-to-left aware, accessible, and respectful of
-*reduce motion*.
+![Liquid glass assistant orbs](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/liquid_orb.png)
 
-![Animated tour of the neural widgets](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/hero.gif)
+![Animated tour](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/hero.gif)
 
-## Gallery
-
-| | | |
-| :---: | :---: | :---: |
-| ![NeuralOrb](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/orb_dark.png) <br> **`NeuralOrb`**<br>assistant orb: idle, listening, thinking, speaking | ![NeuralGauge](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/gauge_dark.png) <br> **`NeuralGauge`**<br>animated KPI ring with thresholds | ![NeuralSparkline](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/chart_dark.png) <br> **`NeuralSparkline`**<br>glowing, scrubbable trend line |
-| ![VoiceWave](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/voice_dark.png) <br> **`VoiceWave`** + **`WordByWordTranscript`**<br>voice visual and live captions | ![NeuralScanRing](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/scan_dark.png) <br> **`NeuralScanRing`**<br>scan / verify with success and failure | ![NeuralProgress](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/progress_dark.png) <br> **`NeuralProgress`**<br>synapse ring and glowing bar loaders |
-| ![NeuralHeatmap](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/heatmap_dark.png) <br> **`NeuralHeatmap`**<br>activity calendar with glow | ![NeuralAvatar](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/avatar_dark.png) <br> **`NeuralAvatar`**<br>presence aura and speaking ripples | ![NeuralGlassCard](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/glass_dark.png) <br> **`NeuralGlassCard`** on **`NeuralNetworkBackground`**<br>frosted panels on a living network |
-
-The original HUD, `AiThinkingAnimation`, in ring and Earth mode:
-
-| Ring (dark) | Earth (light) |
+| Assistant: tools and generated UI | Rehoboam HUD flown by the model |
 | :---: | :---: |
-| ![Ring](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/hero_dark.png) | ![Earth](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/hero_light.png) |
+| ![Assistant](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/assistant_dark.png) | ![HUD](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/hud_earth_dark.png) |
 
-Everything in light mode, and on phones (including right-to-left):
-
-| Desktop, light | Phone, dark | Phone, light, RTL |
+| Phone, light | HUD, light | Right-to-left |
 | :---: | :---: | :---: |
-| ![Light](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/gallery_light.png) | ![Phone dark](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/phone_dark.png) | ![Phone RTL](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/phone_light_rtl.png) |
+| ![Phone assistant](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/phone_assistant_light.png) | ![Phone HUD](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/phone_hud_light.png) | ![RTL](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/phone_widgets_rtl.png) |
+
+## Why
+
+- **One API for every model.** Swap Claude for Gemini, a local Ollama model or
+  your own Genkit backend by changing one line. Streaming, tool calls,
+  reasoning summaries and refusals look the same everywhere.
+- **Agents that do things.** Tools with JSON Schema validation, approval
+  gates, multi-step loops, retries and cancellation.
+- **Generative UI.** The model answers with live cards, gauges, charts,
+  lists and buttons from a component catalog instead of walls of text.
+- **Voice.** Speech-to-text and text-to-speech drive the orb, the HUD and
+  read-along transcripts. Works with any plugin, or with the browser's
+  built-in speech on the web (no plugin at all).
+- **A design language, not a widget pile.** Liquid glass, prismatic light
+  and calm motion by default (or the original neon), themed from your
+  `ColorScheme`, RTL-aware, accessible, reduced-motion safe.
 
 ## Quick start
 
 ```yaml
 dependencies:
-  rehoboam_neural_ui: ^1.0.0
+  rehoboam_neural_ui: ^1.1.0
 ```
+
+A complete assistant screen in a few lines:
 
 ```dart
 import 'package:rehoboam_neural_ui/rehoboam_neural_ui.dart';
 
-// An assistant that reacts to the microphone.
-NeuralOrb(
-  state: NeuralOrbState.listening,
-  level: micLevel, // 0..1, raw readings are fine (smoothed internally)
-  onTap: toggleListening,
-)
+final agent = NeuralAgent(
+  model: ClaudeModel(baseUrl: 'https://your-proxy.example.com'),
+  system: 'You are a concise assistant.',
+  tools: [weatherTool],
+  uiCatalog: NeuralUiCatalog.standard(), // lets the model draw UI
+);
 
-// A KPI that turns amber above 70 and red above 90.
-NeuralGauge(
-  value: cpu,
-  unit: '%',
-  label: 'CPU',
-  thresholds: const [
-    NeuralGaugeThreshold(70, Colors.amber),
-    NeuralGaugeThreshold(90, Colors.red),
-  ],
-)
-
-// A biometric check that navigates once the animation lands.
-NeuralScanRing(
-  status: verified ? NeuralScanStatus.success : NeuralScanStatus.scanning,
-  progress: scanProgress,
-  onResolved: (_) => Navigator.of(context).pop(),
-  child: const Icon(Icons.fingerprint_rounded, size: 64),
-)
-
-// A living backdrop behind any screen.
-NeuralNetworkBackground(child: yourDashboard)
+Scaffold(body: NeuralChatView(agent: agent, title: 'Assistant'));
 ```
 
-The [example app](example/lib/main.dart) is a full adaptive dashboard (phone to
-desktop, light and dark, LTR and RTL) using every widget.
+A tool is a name, a JSON Schema and a function:
+
+```dart
+final weatherTool = NeuralTool(
+  name: 'get_weather',
+  description: 'Current weather for a city.',
+  parameters: {
+    'type': 'object',
+    'properties': {'city': {'type': 'string'}},
+    'required': ['city'],
+  },
+  handler: (args, ctx) async => {'city': args['city'], 'tempC': 21},
+);
+```
+
+## Models
+
+| Adapter | Connects to |
+| --- | --- |
+| `ClaudeModel` | Anthropic Messages API. Defaults: `claude-opus-5-5`, adaptive thinking with summarized reasoning, streaming, eager tool-input streaming, server-side refusal fallbacks. Thinking blocks are replayed unchanged for multi-step tool use. |
+| `GeminiModel` | Gemini API (`streamGenerateContent`, default `gemini-3.8-flash`). Thought signatures are replayed exactly as required for function calling. |
+| `OpenAICompatibleModel` | Any Chat Completions server: `.openAI`, `.openRouter`, `.groq`, `.ollama`, `.lmStudio`, or a custom `baseUrl` (Together, DeepSeek, Mistral, vLLM, llama.cpp...). |
+| `GenkitFlowModel` | A Genkit flow over HTTP (`startFlowServer` / `expressHandler` / Go handler), streamed. |
+| `CallbackModel` | Anything else: Firebase AI Logic, on-device models, a WebSocket. Wrap a `Stream<String>` or full events in one function. |
+| `ScriptedModel` | Offline playback for demos, tests and screenshots. |
+
+```dart
+agent.model = GeminiModel(apiKey: key);                          // switch any time
+agent.model = OpenAICompatibleModel.ollama(model: 'qwen3');       // local
+agent.model = GenkitFlowModel(url: Uri.parse('https://api.example.com/chat'));
+agent.model = CallbackModel.text((r) => mySdk.stream(r.messages.last.text));
+```
+
+> **Keys:** don't ship provider keys inside an app. Point `baseUrl` at your
+> own proxy, a Genkit flow, or Firebase AI Logic (via `CallbackModel`), and
+> pass your auth in `headers`. Direct keys are fine for prototypes and
+> local models.
+
+## Agent
+
+`NeuralAgent` is a `ChangeNotifier`. Per-token and per-frame data are separate
+`ValueListenable`s, so UIs rebuild only what changes.
+
+| Member | What it gives you |
+| --- | --- |
+| `send(text, images:)`, `retry()`, `stop()`, `clear()` | Run, regenerate, cancel, reset. |
+| `phase` | `idle`, `listening`, `thinking`, `responding`, `usingTool`, `speaking`, `error`. |
+| `orbState`, `level` | Feed `NeuralOrb` / `NeuralLiquidOrb` / the HUD directly. |
+| `streamingText`, `reasoningText` | The live answer and reasoning summary. |
+| `messages` | The conversation (JSON-serializable with `toJson` / `fromJson`). |
+| `onApproveTool` | Asked before any tool with `requiresApproval: true`. |
+| `maxSteps`, `maxRetries` | Tool-loop cap; retries for 429 / 5xx / network before output. |
+| `listen()`, `speak()`, `speakReplies` | Voice in and out. |
+
+Arguments are validated against each tool's schema before the tool runs;
+invalid JSON, unknown tools, declined approvals and thrown errors go back to
+the model as error results, never as crashes. Refused or truncated turns
+never execute tools.
+
+## Generative UI
+
+Give the agent a `NeuralUiCatalog` and the model gets a `render_ui` tool. Its
+specs are plain JSON:
+
+```json
+{"type": "card", "props": {"title": "Production"}, "children": [
+  {"type": "row", "children": [
+    {"type": "gauge", "props": {"label": "CPU", "value": 67, "unit": "%"}},
+    {"type": "stat", "props": {"label": "Requests", "value": "1.2k", "delta": "+8%"}}
+  ]},
+  {"type": "buttons", "props": {"options": [{"label": "Details", "action": "Show details"}]}}
+]}
+```
+
+Built in: `column`, `row`, `card`, `text`, `stat`, `gauge`, `sparkline`,
+`progress`, `list`, `buttons`. Add your own with `NeuralUiComponent` (a name, a
+props schema, a builder). Specs are validated, unknown types render a notice,
+and button taps come back to the model as user messages. `catalog.jsonSchemas`
+exposes every component schema for A2UI, Genkit or any other function-calling
+framework. `NeuralUiSurface` renders a spec anywhere, not only in the chat.
+
+## Voice
+
+```dart
+agent
+  ..speechToText = WebSpeechToText()   // browser speech, no plugin (web)
+  ..textToSpeech = WebTextToSpeech()
+  ..speakReplies = true;
+await agent.listen();                  // hear -> send -> answer -> speak
+```
+
+On mobile and desktop, adapt any plugin in a few lines with
+`CallbackSpeechToText` / `CallbackTextToSpeech` (examples for
+`speech_to_text` and `flutter_tts` are in their API docs). `SimulatedSpeech`
+gives deterministic voice for demos and tests.
+
+## The Rehoboam HUD, now AI-driven
+
+```dart
+final hud = RehoboamController()..bindAgent(agent);
+hud.tools.forEach(agent.addTool);           // the model can fly the globe
+RehoboamHud(controller: hud, size: 420);
+```
+
+The ring breathes with the microphone, spikes while the assistant speaks and
+captions the agent's phase. Ask "show me Tokyo" and the model calls
+`show_on_globe`: the ring dissolves into the dotted Earth, flies there and
+pulses event markers. `AiThinkingAnimation` is still available directly.
+
+## Widgets
+
+| | | |
+| :---: | :---: | :---: |
+| ![NeuralLiquidOrb](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/liquid_dark.png) <br> **`NeuralLiquidOrb`** · **`NeuralWaveform`**<br>liquid glass orb, voice ribbons | ![NeuralOrb](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/orb_dark.png) <br> **`NeuralOrb`**<br>assistant states | ![NeuralGauge](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/gauge_dark.png) <br> **`NeuralGauge`**<br>KPI ring with thresholds |
+| ![NeuralSparkline](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/chart_dark.png) <br> **`NeuralSparkline`**<br>scrubbable trend | ![VoiceWave](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/voice_dark.png) <br> **`VoiceWave`** · **`WordByWordTranscript`** | ![NeuralScanRing](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/scan_dark.png) <br> **`NeuralScanRing`**<br>scan, verify, reject |
+| ![NeuralProgress](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/progress_dark.png) <br> **`NeuralProgress`**<br>ring and bar loaders | ![NeuralHeatmap](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/heatmap_dark.png) <br> **`NeuralHeatmap`**<br>activity calendar | ![NeuralAvatar](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/avatar_dark.png) <br> **`NeuralAvatar`**<br>presence aura |
+| ![NeuralGlassCard](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/glass_dark.png) <br> **`NeuralGlassCard`** · **`NeuralNetworkBackground`** | ![Rehoboam](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/tiles/hero_dark.png) <br> **`AiThinkingAnimation`**<br>ring and Earth | **`NeuralEdgeGlow`**<br>assistant glow around a screen, card or input<br><br>**`NeuralChatView`**<br>the whole conversation UI |
+
+Every widget in both designs:
+
+| Liquid, light | Neon, dark |
+| :---: | :---: |
+| ![Light](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/gallery_light.png) | ![Neon](https://raw.githubusercontent.com/developerashkan/rehoboam_neural_ui/master/assets/screenshots/gallery_neon.png) |
+
+### Key parameters
+
+| Widget | Highlights |
+| --- | --- |
+| `NeuralLiquidOrb` | `state`, `level`, `palette` (`graphite`, `aurora`, `ember`, `ocean`, `orchid`, `fromScheme`), `tile`, `onTap` |
+| `NeuralOrb` | Same states; liquid orb in the liquid design, organic blob in neon |
+| `NeuralWaveform` | `level`, `active`, `colors` |
+| `NeuralEdgeGlow` | `active`, `level`, `borderRadius`, `width` |
+| `NeuralChatView` | `agent`, `title`, `suggestions`, `strings` (localizable), `emptyState` |
+| `NeuralGauge` | `value`, `min`, `max`, `unit`, `label`, `thresholds`, `sweepDegrees` |
+| `NeuralSparkline` | `data` (NaN = gap), `onScrub`, `valueFormatter`, `mirrorInRtl` |
+| `NeuralProgress` / `.linear` | `value` (null = indeterminate), `child` |
+| `NeuralHeatmap` | `values` (DST-safe day buckets), `weeks`, `onCellTap` |
+| `NeuralScanRing` | `status`, `progress`, `onResolved`, `statusLabels` |
+| `NeuralAvatar` | `image`, `name`, `presence`, `speaking`, `level` |
+| `NeuralGlassCard` | `child`, `onTap` (keyboard accessible), `blur` |
+| `NeuralNetworkBackground` | `density`, `linkDistance`, `interactive`, `seed` |
+| `AiThinkingAnimation` | `level`, `mode`, `hudMode`, `targetLat` / `targetLon`, `geoPoints`, labels |
 
 ## Theming
 
-Every widget resolves its colors in this order:
-
-1. the argument you pass (`color:`, `secondaryColor:`, `trackColor:`...);
-2. a `NeuralThemeData` theme extension, for app-wide overrides;
-3. the ambient `ColorScheme` (`primary` for the accent, `tertiary` for the
-   secondary, `onSurface` for text and tracks, `error` for failures).
+Colors resolve from a widget argument, then the `NeuralThemeData` extension,
+then your `ColorScheme`:
 
 ```dart
-MaterialApp(
-  theme: ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
-    extensions: const [
-      NeuralThemeData(
-        accent: Color(0xFF00E5FF),
-        success: Color(0xFF4ADE9B),
-        glowIntensity: 1.3, // 0 disables every glow
-      ),
-    ],
-  ),
+ThemeData(
+  colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+  extensions: const [
+    NeuralThemeData(
+      design: NeuralDesign.liquid,      // or NeuralDesign.neon
+      spectrum: [Color(0xFFFF8A5B), Color(0xFFFF4FB8), Color(0xFF8D6BFF), Color(0xFF39B8FF)],
+      glowIntensity: 0.5,
+    ),
+  ],
 )
 ```
 
-## Widgets and parameters
+## Shaders
 
-### `AiThinkingAnimation`: the Rehoboam HUD
+The liquid orb, waveform, edge glow and glass rim are GPU fragment shaders
+bundled with the package (no setup). Each widget paints a gradient fallback
+until its shader is ready, so nothing ever blocks. Optionally warm them up:
 
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `level` | `0` | Energy `0..1` driving the ring's ink texture. |
-| `mode` | `listening` | `AiFaceMode.speaking` is faster and spikier. |
-| `hudMode` | `ring` | `HudMode.earth` dissolves the ring into a dotted globe. |
-| `targetLat` / `targetLon` | `null` | Where the globe flies (and zooms) in Earth mode. |
-| `geoPoints` | `null` | Markers: `{'lat': .., 'lon': .., 'mag': ..}`. |
-| `centerLabel` / `topLabel` / `bottomLabel` | `null` | HUD captions (mirrored in RTL). |
-| `color` | `white` | Ring and label ink; pass `onSurface` on light themes. |
-| `size`, `speed`, `animate`, `dotGlobeController`, `dotGlobeStyle`, `semanticsLabel` | | |
+```dart
+WidgetsFlutterBinding.ensureInitialized();
+await NeuralShaders.precache();
+```
 
-### `NeuralOrb`
+## Accessibility, motion, RTL
 
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `state` | `idle` | `idle`, `listening`, `thinking`, `speaking`; changes ease over ~400 ms. |
-| `level` | `0` | Audio level `0..1`, smoothed internally. |
-| `onTap` | `null` | Makes it a button (push-to-talk). |
-| `size`, `color`, `secondaryColor`, `speed`, `animate`, `semanticsLabel` | | |
-
-### `VoiceWave` and `WordByWordTranscript`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `VoiceWave.mode` | `listening` | Aurora blob, or spectral bars for `speaking`. |
-| `VoiceWave.level` | `0` | Input level `0..1`. |
-| `VoiceWave.color` / `secondaryColor` / `particleColor` | scheme | Overrides. |
-| `WordByWordTranscript.text` | `''` | The partial or final transcript; only changed words re-animate. |
-| `WordByWordTranscript.isFinal` | `false` | Stops emphasizing the last word. |
-| `WordByWordTranscript.maxLines` | `3` | Keeps the newest lines visible. |
-| `WordByWordTranscript.highlightIndex` | `null` | Emphasize a specific word (karaoke / TTS). |
-
-`AudioLevelStream.instance` is a broadcast hub: feed it from any recorder
-plugin with `addLevel(v)` and listen to `.stream`.
-
-### `NeuralGauge`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `value`, `min`, `max` | `—`, `0`, `100` | Reading (clamped; NaN shows `min`). |
-| `unit`, `label`, `valueFormatter` | | Readout text (real `Text`, scales with font size). |
-| `thresholds` | `[]` | `NeuralGaugeThreshold(value, color)` bands. |
-| `sweepDegrees` | `270` | Arc length. |
-| `ticks`, `strokeWidth`, `duration`, `curve`, `size`, colors | | |
-
-### `NeuralSparkline`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `data` | required | Oldest first; `NaN` / infinity become gaps. Changes morph smoothly. |
-| `smooth` | `true` | Monotone cubic curve (never overshoots the data). |
-| `fill`, `showLatestDot`, `strokeWidth`, `height`, `minY`, `maxY` | | |
-| `interactive`, `onScrub`, `valueFormatter`, `labelBuilder` | | Drag / hover cursor with tooltip. |
-| `mirrorInRtl` | `true` | Time flows with the reading direction. |
-
-### `NeuralProgress`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `value` | `null` | `0..1`, or `null` for indeterminate. Animates to new values. |
-| `NeuralProgress(...)` | | Circular: `size`, `strokeWidth`, `nodes`, optional centered `child`. |
-| `NeuralProgress.linear(...)` | | A glowing bar: `height`. |
-| colors, `duration`, `semanticsLabel`, `animate` | | Announced as a percentage. |
-
-### `NeuralHeatmap`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `values` | required | `Map<DateTime, double>`, bucketed by calendar day (DST-safe; duplicates summed). |
-| `endDate`, `weeks` | today, `20` | Range shown. Weeks start on the locale's first day. |
-| `cellSize`, `cellSpacing` | fit, `3` | Cells fit the width unless fixed. |
-| `onCellTap` | `null` | `(DateTime day, double value)`; the tapped cell is outlined. |
-| `maxValue`, `showWeekdayLabels`, `showMonthLabels`, `monthLabelBuilder`, colors | | |
-
-### `NeuralScanRing`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `status` | `scanning` | `idle`, `scanning`, `success`, `failure`. |
-| `progress` | `null` | `0..1`, or `null` for an indeterminate scan. |
-| `onResolved` | `null` | Fires once the success / failure animation finishes. |
-| `child` | `null` | Face, fingerprint or thumbnail, clipped to a circle. |
-| `statusLabels`, `successColor`, `errorColor`, `color`, `size` | | Status changes are announced (live region). |
-
-### `NeuralAvatar`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `image`, `name` | `null`, `''` | Photo, falling back to grapheme-aware initials. |
-| `presence` | `online` | `online`, `away`, `busy`, `offline`. |
-| `speaking`, `level` | `false`, `0` | Voice ripples. |
-| `showBadge`, `auraColor`, `onTap`, `presenceLabels`, `size` | | The badge sits at the bottom-end corner. |
-
-### `NeuralGlassCard`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `child` | required | Content. |
-| `onTap` | `null` | Makes it a focusable button (Enter / Space, focus glow). |
-| `blur` | `18` | Backdrop blur; `0` skips the backdrop filter. |
-| `animateBorder`, `glow`, `borderRadius`, `borderWidth`, `padding`, `tint`, colors | | |
-
-### `NeuralNetworkBackground`
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `child` | `null` | Content on top (keeps receiving input). |
-| `density`, `maxNodes` | `1.0`, `140` | Nodes per 100×100 px, so phones and desktops look alike. |
-| `linkDistance`, `pulses`, `interactive`, `seed`, `speed`, colors | | The pointer attracts nodes. Same seed, same network on every platform. |
-
-## Accessibility and motion
-
-- Every widget has a meaningful semantics label (and value where it makes
-  sense: gauge reading, progress percentage, chart summary, heatmap totals).
-  Decorative layers are excluded.
-- With `MediaQuery.disableAnimations` (the OS *reduce motion* setting) every
-  widget shows a still frame and state changes apply instantly; no frames are
-  scheduled.
-- Right-to-left: HUD labels, progress fills, gauges, chart time axes, heatmap
-  weeks and avatar badges all mirror.
-
-## Performance
-
-- Continuous animations drive their `CustomPainter` through a `repaint`
-  listenable: no widget rebuilds per frame, and every animated layer sits in
-  its own `RepaintBoundary`.
-- Particle and link buffers are preallocated `Float32List`s drawn in a few
-  batched `drawRawPoints` calls; shaders and paths are cached per size.
-- Randomness uses a 32-bit xorshift PRNG, so web and native draw identical
-  scenes.
+- Meaningful semantics everywhere: the chat streams into a live region, tool
+  chips and scan states are announced, gauges and charts expose values.
+- `MediaQuery.disableAnimations` gives still frames and instant state changes.
+- HUD labels, progress, gauges, charts, heatmap weeks, bubbles and badges all
+  mirror in right-to-left locales; chat strings are localizable.
 
 ## Platforms
 
-Android, iOS, web, macOS, Windows and Linux. The package is pure Dart and
-Flutter (no `dart:io`, no plugins). The 3D globe comes from
-[`dot_globe`](https://pub.dev/packages/dot_globe), which is also pure Dart.
+Android, iOS, web, macOS, Windows and Linux. Pure Dart and Flutter: no
+`dart:io`, no native code. Network calls use `package:http` (streaming works
+on the web through the Fetch API); browser speech uses `dart:js_interop` and
+is compiled only for the web.
 
-## Screenshots
+## Example
 
-The images above are rendered from widget tests with real fonts:
+The [example](example/lib/main.dart) is a full app with **Assistant**, **HUD**
+and **Widgets** sections, light and dark, liquid and neon, LTR and RTL. It runs
+offline with a scripted model; open *Model settings* to plug in Claude,
+Gemini, an OpenAI-compatible API or a local Ollama model.
+
+Screenshots are rendered from widget tests with real fonts:
 
 ```sh
 cd example

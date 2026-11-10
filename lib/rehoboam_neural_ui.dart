@@ -1,10 +1,16 @@
-/// Rehoboam-style neural UI for Flutter: an organic HUD ring with a 3D
-/// globe, plus assistant orbs, voice visuals, gauges, glowing charts,
-/// heatmaps, glass cards, scan rings, presence avatars and a living
-/// network backdrop. Pure Flutter, every platform.
+/// Rehoboam neural UI for Flutter: a pure liquid-glass design system
+/// (assistant orb, voice waveform, edge glow, glass), the organic Rehoboam
+/// HUD ring and 3D globe, gauges, charts, heatmaps, scan rings, presence
+/// avatars, and an AI layer (any LLM, tools, generative UI, voice, chat).
 library;
 
-export 'src/core/neural_theme.dart' show NeuralThemeData, NeuralPalette;
+export 'ai.dart';
+export 'src/core/neural_theme.dart'
+    show NeuralThemeData, NeuralPalette, NeuralDesign, NeuralSpectrum;
+export 'src/liquid/liquid_orb.dart' show NeuralLiquidOrb, LiquidPalette;
+export 'src/liquid/liquid_widgets.dart'
+    show NeuralWaveform, NeuralEdgeGlow, LiquidGlassRim;
+export 'src/liquid/neural_shaders.dart' show NeuralShaders, NeuralShader;
 export 'src/rehoboam.dart' show AiThinkingAnimation, AiFaceMode, HudMode;
 export 'src/voice_wave.dart'
     show VoiceWave, VoiceWaveMode, AudioLevelSnapshot, AudioLevelStream;

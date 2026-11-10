@@ -62,8 +62,15 @@ Future<void> capturePng(WidgetTester tester, Key key, String path,
   // flutter_test draws shadows as hard blocks for golden determinism; real
   // devices blur them, so screenshots must too.
   debugDisableShadows = false;
+  // Repaint everything, including nested repaint boundaries (their cached
+  // layers would otherwise keep the test-mode shadows).
+  void repaint(RenderObject r) {
+    r.markNeedsPaint();
+    r.visitChildren(repaint);
+  }
+
   for (final v in tester.binding.renderViews) {
-    v.markNeedsPaint();
+    repaint(v);
   }
   await tester.pump();
   final boundary = tester.renderObject<RenderRepaintBoundary>(find.byKey(key));

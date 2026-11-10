@@ -151,22 +151,17 @@ class Showcase extends StatelessWidget {
                           ),
                         ),
                         card(
-                          'VoiceWave · NeuralAvatar',
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          'NeuralWaveform · NeuralAvatar',
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              VoiceWave(
-                                size: 110,
-                                level: 0.7,
-                                mode: speaking
-                                    ? VoiceWaveMode.speaking
-                                    : VoiceWaveMode.listening,
-                              ),
+                              NeuralWaveform(
+                                  level: speaking ? 0.75 : 0.35, height: 70),
                               const NeuralAvatar(
                                 name: 'Ada Lovelace',
                                 speaking: true,
                                 level: 0.7,
-                                size: 60,
+                                size: 52,
                               ),
                             ],
                           ),

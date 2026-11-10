@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../core/neural_clock.dart';
 import '../core/neural_theme.dart';
+import '../liquid/liquid_widgets.dart' show LiquidGlassRim;
 
 /// A frosted-glass panel with a living "neural current" running around its
 /// border and a soft glow that brightens on hover, focus and press.
@@ -99,7 +100,9 @@ class _NeuralGlassCardState extends State<NeuralGlassCard>
   }
 
   void _sync() {
-    _clock.setRunning(widget.animateBorder && !_reduce);
+    // The liquid rim runs its own clock; the neon border current uses ours.
+    final neon = !NeuralPalette.of(context).isLiquid;
+    _clock.setRunning(neon && widget.animateBorder && !_reduce);
   }
 
   void _updateEmphasis() {
@@ -132,8 +135,13 @@ class _NeuralGlassCardState extends State<NeuralGlassCard>
     );
     final radius = finiteOr(widget.borderRadius, 24).clamp(0.0, 400.0);
     final blur = finiteOr(widget.blur, 18).clamp(0.0, 80.0);
+    final liquid = palette.isLiquid;
     final tint = widget.tint ??
-        scheme.surface.withValues(alpha: palette.isDark ? 0.42 : 0.58);
+        (liquid
+            ? (palette.isDark
+                ? const Color(0xFF1B1D24).withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.62))
+            : scheme.surface.withValues(alpha: palette.isDark ? 0.42 : 0.58));
     final interactive = widget.onTap != null;
 
     Widget glass = DecoratedBox(
@@ -175,15 +183,31 @@ class _NeuralGlassCardState extends State<NeuralGlassCard>
               radius: radius,
             )
           : null,
-      foregroundPainter: _BorderCurrentPainter(
-        clock: _clock,
-        emphasis: _emphasis,
-        palette: palette,
-        radius: radius,
-        width: finiteOr(widget.borderWidth, 1.4).clamp(0.0, 8.0),
-        animated: widget.animateBorder,
-      ),
-      child: glass,
+      foregroundPainter: liquid
+          ? null
+          : _BorderCurrentPainter(
+              clock: _clock,
+              emphasis: _emphasis,
+              palette: palette,
+              radius: radius,
+              width: finiteOr(widget.borderWidth, 1.4).clamp(0.0, 8.0),
+              animated: widget.animateBorder,
+            ),
+      child: liquid
+          ? Stack(
+              children: [
+                glass,
+                // Light catching the glass edge, with a prismatic fringe.
+                Positioned.fill(
+                  child: LiquidGlassRim(
+                    radius: radius,
+                    emphasis: _emphasis,
+                    animate: widget.animateBorder,
+                  ),
+                ),
+              ],
+            )
+          : glass,
     );
 
     card = AnimatedScale(
@@ -257,10 +281,16 @@ class _GlowPainter extends CustomPainter {
       (Offset.zero & size).deflate(6),
       Radius.circular(radius),
     );
+    // Liquid: a neutral, soft drop shadow. Neon: a colored bloom.
     _paint
-      ..color = palette.accent.withValues(
-        alpha: ((palette.isDark ? 0.16 : 0.12) + 0.26 * e) * k.clamp(0, 1.5),
-      )
+      ..color = palette.isLiquid
+          ? Colors.black.withValues(
+              alpha: (palette.isDark ? 0.34 : 0.09) + 0.06 * e,
+            )
+          : palette.accent.withValues(
+              alpha:
+                  ((palette.isDark ? 0.16 : 0.12) + 0.26 * e) * k.clamp(0, 1.5),
+            )
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 18 + 10 * e);
     canvas.drawRRect(rr.shift(const Offset(0, 6)), _paint);
   }

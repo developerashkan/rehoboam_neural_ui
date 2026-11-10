@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'core/neural_clock.dart';
+import 'core/neural_theme.dart';
 
 /// One audio-level reading. [level] is normalized `0..1`.
 class AudioLevelSnapshot {
@@ -113,7 +114,15 @@ class _VoiceWaveState extends State<VoiceWave>
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final palette = NeuralPalette.of(context);
     final listening = widget.mode == VoiceWaveMode.listening;
+    // Liquid design: iridescent stops instead of primary / tertiary.
+    final a = palette.isLiquid
+        ? palette.strokeAt(listening ? 0.7 : 0.3)
+        : (listening ? scheme.primary : scheme.tertiary);
+    final b = palette.isLiquid
+        ? palette.strokeAt(listening ? 0.25 : 0.85)
+        : (listening ? scheme.tertiary : scheme.primary);
     final size = finiteOr(widget.size, 180).clamp(0.0, double.maxFinite);
     return Semantics(
       label: widget.semanticsLabel ?? (listening ? 'Listening' : 'Speaking'),
@@ -126,10 +135,8 @@ class _VoiceWaveState extends State<VoiceWave>
               clock: _clock,
               mode: widget.mode,
               level: unit(widget.level),
-              color: widget.color ??
-                  (listening ? scheme.primary : scheme.tertiary),
-              secondary: widget.secondaryColor ??
-                  (listening ? scheme.tertiary : scheme.primary),
+              color: widget.color ?? a,
+              secondary: widget.secondaryColor ?? b,
               particleColor: widget.particleColor ?? scheme.onSurface,
               particleCount: math.max(0, widget.particleCount),
             ),

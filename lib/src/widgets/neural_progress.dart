@@ -35,7 +35,7 @@ class NeuralProgress extends StatefulWidget {
     this.color,
     this.secondaryColor,
     this.trackColor,
-    this.nodes = 12,
+    this.nodes,
     this.child,
     this.semanticsLabel,
     this.duration = const Duration(milliseconds: 450),
@@ -84,8 +84,9 @@ class NeuralProgress extends StatefulWidget {
   /// Unfilled track color.
   final Color? trackColor;
 
-  /// Synapse nodes around the ring (circular, `0` hides them).
-  final int nodes;
+  /// Synapse nodes around the ring (circular, `0` hides them). Defaults
+  /// to 12 in the neon design and none in the liquid design.
+  final int? nodes;
 
   /// Optional content centered in the ring (e.g. a percentage).
   final Widget? child;
@@ -182,7 +183,7 @@ class _NeuralProgressState extends State<NeuralProgress>
       shape: widget.shape,
       palette: palette,
       rtl: rtl,
-      nodes: math.max(0, widget.nodes),
+      nodes: math.max(0, widget.nodes ?? (palette.isLiquid ? 0 : 12)),
       strokeWidth: widget.strokeWidth,
     );
 
@@ -303,8 +304,9 @@ class NeuralProgressPainter extends CustomPainter {
     if (_shader == null || _shaderSize != size) {
       _shaderSize = size;
       _shader = SweepGradient(
-        colors: [palette.secondary, palette.accent, palette.secondary],
-        stops: const [0, 0.5, 1],
+        colors: palette.isLiquid
+            ? [...palette.strokeColors, palette.strokeColors.first]
+            : [palette.secondary, palette.accent, palette.secondary],
         transform: const GradientRotation(-math.pi / 2),
       ).createShader(rect);
     }
@@ -408,7 +410,8 @@ class NeuralProgressPainter extends CustomPainter {
       _shader = ui.Gradient.linear(
         Offset(rtl ? w : 0, 0),
         Offset(rtl ? 0 : w, 0),
-        [palette.secondary, palette.accent],
+        palette.strokeColors,
+        _evenStops(palette.strokeColors.length),
       );
     }
     _dot
@@ -448,3 +451,6 @@ class NeuralProgressPainter extends CustomPainter {
       old.nodes != nodes ||
       old.strokeWidth != strokeWidth;
 }
+
+List<double> _evenStops(int n) =>
+    [for (var i = 0; i < n; i++) n == 1 ? 0.0 : i / (n - 1)];

@@ -182,7 +182,11 @@ class _NeuralScanRingState extends State<NeuralScanRing>
 
   @override
   Widget build(BuildContext context) {
-    final palette = NeuralPalette.of(context, accent: widget.color);
+    final base = NeuralPalette.of(context, accent: widget.color);
+    // Liquid design: an iridescent violet-azure scan instead of primary.
+    final palette = widget.color == null && base.isLiquid
+        ? NeuralPalette.of(context, accent: base.strokeAt(0.78))
+        : base;
     final size = finiteOr(widget.size, 180).clamp(0.0, double.maxFinite);
     final resolveColor = switch (widget.status) {
       NeuralScanStatus.success => widget.successColor ?? palette.success,

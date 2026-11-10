@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'core/neural_clock.dart';
+import 'core/neural_theme.dart';
 
 /// The visual state of the HUD.
 enum HudMode {
@@ -54,7 +55,7 @@ class AiThinkingAnimation extends StatefulWidget {
       dotColor: Colors.white,
       sphereColor: Colors.transparent,
     ),
-    this.color = Colors.white,
+    this.color,
     this.semanticsLabel,
     this.animate = true,
   });
@@ -100,10 +101,10 @@ class AiThinkingAnimation extends StatefulWidget {
   /// Globe colors.
   final DotGlobeStyle dotGlobeStyle;
 
-  /// Ring particle and label color. Defaults to white (the HUD is designed
-  /// for dark backdrops); pass `Theme.of(context).colorScheme.onSurface` to
-  /// follow the theme.
-  final Color color;
+  /// Ring particle and label color. Defaults to white on dark themes (the
+  /// HUD's native look) and, in the liquid design, to the theme's
+  /// `onSurface` on light themes.
+  final Color? color;
 
   /// Accessibility label. Defaults to the visible labels.
   final String? semanticsLabel;
@@ -343,7 +344,7 @@ class _AiThinkingAnimationState extends State<AiThinkingAnimation>
                 transition: _transitionAnim,
                 level: unit(widget.level),
                 mode: widget.mode,
-                color: widget.color,
+                color: widget.color ?? _defaultInk(context),
                 textDirection: dir,
                 centerLabel: widget.centerLabel,
                 topLabel: widget.topLabel,
@@ -354,6 +355,16 @@ class _AiThinkingAnimationState extends State<AiThinkingAnimation>
         ],
       ),
     );
+  }
+
+  Color _defaultInk(BuildContext context) {
+    final theme = Theme.of(context);
+    final liquid =
+        (theme.extension<NeuralThemeData>()?.design ?? NeuralDesign.liquid) ==
+            NeuralDesign.liquid;
+    return liquid && theme.brightness == Brightness.light
+        ? theme.colorScheme.onSurface
+        : Colors.white;
   }
 
   @override

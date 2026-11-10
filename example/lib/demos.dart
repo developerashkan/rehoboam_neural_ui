@@ -86,6 +86,7 @@ class _DemoGridState extends State<DemoGrid> {
   @override
   Widget build(BuildContext context) {
     final cards = <Widget>[
+      LiquidDemo(sim: _sim),
       OrbDemo(sim: _sim),
       const GaugeDemo(),
       const ChartDemo(),
@@ -888,6 +889,77 @@ class _GlassDemoState extends State<GlassDemo> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The liquid design: orb palettes as app-icon tiles and the voice ribbon.
+class LiquidDemo extends StatefulWidget {
+  /// Creates the demo.
+  const LiquidDemo({super.key, required this.sim});
+
+  /// Live data.
+  final DemoSim sim;
+
+  @override
+  State<LiquidDemo> createState() => _LiquidDemoState();
+}
+
+class _LiquidDemoState extends State<LiquidDemo> {
+  static const _palettes = [
+    ('Graphite', LiquidPalette.graphite),
+    ('Aurora', LiquidPalette.aurora),
+    ('Ember', LiquidPalette.ember),
+    ('Ocean', LiquidPalette.ocean),
+  ];
+  int _pick = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return DemoCard(
+      widgetName: 'NeuralLiquidOrb',
+      title: 'Liquid glass',
+      caption: 'Two fluids, a prismatic interface. GPU shader, every platform.',
+      child: ListenableBuilder(
+        listenable: widget.sim,
+        builder: (context, _) => Column(
+          children: [
+            NeuralLiquidOrb(
+              size: 150,
+              tile: true,
+              palette: _palettes[_pick].$2,
+              state: NeuralOrbState.speaking,
+              level: widget.sim.level,
+            ),
+            const SizedBox(height: 14),
+            Wrap(
+              alignment: WrapAlignment.center,
+              runSpacing: 8,
+              children: [
+                for (var i = 0; i < _palettes.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Column(
+                      children: [
+                        NeuralLiquidOrb(
+                          size: 44,
+                          palette: _palettes[i].$2,
+                          animate: false,
+                          semanticsLabel: '${_palettes[i].$1} palette',
+                          onTap: () => setState(() => _pick = i),
+                        ),
+                        Text(_palettes[i].$1, style: text.labelSmall),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            NeuralWaveform(level: widget.sim.level, height: 64),
+          ],
+        ),
       ),
     );
   }

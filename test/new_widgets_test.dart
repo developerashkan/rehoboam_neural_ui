@@ -111,7 +111,8 @@ void main() {
     });
 
     testWidgets('state changes ease instead of snapping', (tester) async {
-      await tester.pumpWidget(harness(const NeuralOrb()));
+      await tester
+          .pumpWidget(harness(const NeuralOrb(), design: NeuralDesign.neon));
       await pumpFor(tester, const Duration(milliseconds: 100));
       OrbParams params() => (tester
               .widget<CustomPaint>(find.descendant(
@@ -120,8 +121,9 @@ void main() {
               .painter! as NeuralOrbPainter)
           .params;
       expect(params().vortex, closeTo(0.15, 0.02));
-      await tester
-          .pumpWidget(harness(const NeuralOrb(state: NeuralOrbState.thinking)));
+      await tester.pumpWidget(harness(
+          const NeuralOrb(state: NeuralOrbState.thinking),
+          design: NeuralDesign.neon));
       await tester.pump(const Duration(milliseconds: 16));
       final mid = params().vortex;
       expect(mid, inExclusiveRange(0.15, 0.9));
@@ -130,10 +132,12 @@ void main() {
     });
 
     testWidgets('reduced motion applies the new state at once', (tester) async {
-      await tester.pumpWidget(harness(const NeuralOrb(), reduceMotion: true));
+      await tester.pumpWidget(harness(const NeuralOrb(),
+          reduceMotion: true, design: NeuralDesign.neon));
       await tester.pumpWidget(harness(
           const NeuralOrb(state: NeuralOrbState.thinking),
-          reduceMotion: true));
+          reduceMotion: true,
+          design: NeuralDesign.neon));
       final p = tester
           .widget<CustomPaint>(find.descendant(
               of: find.byType(NeuralOrb), matching: find.byType(CustomPaint)))

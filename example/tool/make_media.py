@@ -10,7 +10,7 @@ import os
 from PIL import Image
 
 OUT = os.path.join('..', 'assets', 'screenshots')
-SCALE = 1.5  # pixelRatio of the full-page captures
+SCALE = 1.25  # pixelRatio of the full-page captures
 
 
 def tiles(theme):
@@ -32,12 +32,14 @@ def gif():
     frames = [Image.open(f).convert('RGB') for f in files]
     w = 800
     frames = [f.resize((w, round(f.height * w / f.width)), Image.LANCZOS) for f in frames]
-    # One shared palette for every frame: no flicker between frames.
-    strip = Image.new('RGB', (w, frames[0].height * 6))
-    for i, k in enumerate(range(0, len(frames), max(1, len(frames) // 6))):
-        if i < 6:
-            strip.paste(frames[k], (0, i * frames[0].height))
-    palette = strip.quantize(colors=255, method=Image.MEDIANCUT)
+    # One shared palette for every frame (no flicker), built with an octree
+    # from 12 sample frames so the prismatic colors survive.
+    h = frames[0].height
+    picks = frames[::max(1, len(frames) // 12)][:12]
+    strip = Image.new('RGB', (w, h * len(picks)))
+    for i, f in enumerate(picks):
+        strip.paste(f, (0, i * h))
+    palette = strip.quantize(colors=255, method=Image.Quantize.FASTOCTREE)
     q = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
     path = os.path.join(OUT, 'hero.gif')
     q[0].save(path, save_all=True, append_images=q[1:], duration=83, loop=0,
@@ -48,6 +50,7 @@ def gif():
 if __name__ == '__main__':
     tiles('dark')
     tiles('light')
+    tiles('neon')
     gif()
     for f in sorted(glob.glob(os.path.join(OUT, '**', '*.*'), recursive=True)):
         print(f, os.path.getsize(f) // 1024, 'KB')

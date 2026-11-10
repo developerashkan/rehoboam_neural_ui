@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../core/neural_clock.dart';
 import '../core/neural_theme.dart';
+import '../liquid/liquid_orb.dart' show LiquidPalette, NeuralLiquidOrb;
 
 /// What an AI assistant is doing, as shown by [NeuralOrb].
 enum NeuralOrbState {
@@ -166,7 +167,9 @@ class _NeuralOrbState extends State<NeuralOrb>
 
   void _sync() {
     _clock.speed = widget.speed;
-    final running = widget.animate && !_reduce && _clock.speed > 0;
+    // In the liquid design the orb is drawn by NeuralLiquidOrb (own clock).
+    final liquid = NeuralPalette.of(context).isLiquid;
+    final running = !liquid && widget.animate && !_reduce && _clock.speed > 0;
     if (!running || !_seeded) {
       // Still frame (or first frame): show the target state immediately.
       _params.easeTo(OrbParams.target(widget.state, unit(widget.level)), 1);
@@ -190,6 +193,24 @@ class _NeuralOrbState extends State<NeuralOrb>
       secondary: widget.secondaryColor,
     );
     final size = finiteOr(widget.size, 160).clamp(0.0, double.maxFinite);
+    if (palette.isLiquid) {
+      final c = widget.color;
+      return NeuralLiquidOrb(
+        state: widget.state,
+        level: widget.level,
+        size: size,
+        palette: c == null
+            ? LiquidPalette.graphite
+            : LiquidPalette(
+                top: Color.lerp(c, Colors.black, 0.72)!,
+                bottom: Color.lerp(c, Colors.white, 0.5)!,
+              ),
+        speed: widget.speed,
+        onTap: widget.onTap,
+        semanticsLabel: widget.semanticsLabel,
+        animate: widget.animate,
+      );
+    }
     Widget orb = SizedBox.square(
       dimension: size,
       child: RepaintBoundary(

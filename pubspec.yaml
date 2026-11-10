@@ -1,24 +1,26 @@
 name: rehoboam_neural_ui
-description: Sci-fi neural UI for Flutter. Rehoboam HUD ring and 3D globe, AI orb, voice wave, gauges, glowing charts, heatmap, glass cards, scan ring and presence avatars.
-version: 1.0.0
+description: AI-native Flutter UI. Liquid-glass orb, voice and chat widgets, the Rehoboam HUD and 3D globe, plus an agent for Claude, Gemini, OpenAI, Genkit and any LLM.
+version: 1.1.0
 homepage: https://github.com/developerashkan/rehoboam_neural_ui
 repository: https://github.com/developerashkan/rehoboam_neural_ui
 issue_tracker: https://github.com/developerashkan/rehoboam_neural_ui/issues
 topics:
+  - ai
+  - llm
+  - chat
   - ui
   - animation
-  - widget
-  - chart
-  - ai
 screenshots:
-  - description: 'Neural dashboard gallery in dark mode'
+  - description: 'Liquid glass assistant orbs'
+    path: assets/screenshots/liquid_orb.png
+  - description: 'AI assistant with tools and generated UI'
+    path: assets/screenshots/assistant_dark.png
+  - description: 'Rehoboam HUD flown to Tokyo by the model'
+    path: assets/screenshots/hud_earth_dark.png
+  - description: 'Every neural widget in the liquid design'
     path: assets/screenshots/gallery_dark.png
-  - description: 'Neural dashboard gallery in light mode'
-    path: assets/screenshots/gallery_light.png
   - description: 'Animated tour of the neural widgets'
     path: assets/screenshots/hero.gif
-  - description: 'Rehoboam HUD ring and 3D Earth globe'
-    path: assets/screenshot.png
 
 environment:
   sdk: ^3.6.0
@@ -34,6 +36,7 @@ platforms:
 
 dependencies:
   dot_globe: ^0.2.0
+  http: ^1.4.0
   flutter:
     sdk: flutter
 
@@ -44,3 +47,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  shaders:
+    - shaders/liquid_orb.frag
+    - shaders/liquid_wave.frag
+    - shaders/edge_glow.frag
+    - shaders/liquid_glass.frag

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rehoboam_neural_ui/rehoboam_neural_ui.dart';
 
 /// Wraps [child] in a themed app with optional dark mode, RTL and reduced
 /// motion.
@@ -9,6 +10,7 @@ Widget harness(
   bool rtl = false,
   bool reduceMotion = false,
   ThemeData? theme,
+  NeuralDesign design = NeuralDesign.liquid,
 }) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -19,6 +21,7 @@ Widget harness(
             seedColor: const Color(0xFF00BFA6),
             brightness: dark ? Brightness.dark : Brightness.light,
           ),
+          extensions: [NeuralThemeData(design: design)],
         ),
     home: Builder(
       builder: (context) => MediaQuery(

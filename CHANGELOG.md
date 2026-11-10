@@ -1,3 +1,73 @@
+## 1.1.0
+
+The AI release, and a new pure "liquid" design. No breaking API changes; the
+default look changes (see *Behavior changes*).
+
+### AI layer (`package:rehoboam_neural_ui/ai.dart`, also exported by the main library)
+
+* `NeuralAgent`: a provider-agnostic conversation with streaming, reasoning
+  summaries, multi-step tool use (schema-validated arguments, approval gate,
+  step cap), retries for 429 / 5xx / network errors, cancellation, JSON
+  persistence, and voice (`listen`, `speak`, `speakReplies`).
+* Models:
+  * `ClaudeModel`: Anthropic Messages API over SSE. Uses `claude-opus-5-5`,
+    adaptive thinking with summaries, eager tool-input streaming with strict
+    parsing, and `fallbacks: "default"`. Thinking blocks are replayed unchanged,
+    and tools never run on refused or truncated turns.
+  * `GeminiModel`: `streamGenerateContent` with `gemini-3.8-flash`.
+    Thought signatures are replayed verbatim.
+  * `OpenAICompatibleModel`: Chat Completions, with presets for OpenAI,
+    OpenRouter, Groq, Ollama and LM Studio.
+  * `GenkitFlowModel`: Genkit flows over HTTP, streamed.
+  * `CallbackModel`: wraps any SDK or on-device model.
+  * `ScriptedModel`: offline demos and tests.
+* `NeuralTool`: JSON Schema tools that work with every provider.
+* Generative UI:
+  * `NeuralUiCatalog` with a `render_ui` tool and the standard components
+    (card, row, column, text, stat, gauge, sparkline, progress, list, buttons).
+  * `NeuralUiSurface` renders specs; `jsonSchemas` exposes every component
+    schema for A2UI or other frameworks.
+* Voice:
+  * `NeuralSpeechToText` / `NeuralTextToSpeech` interfaces.
+  * `WebSpeechToText` / `WebTextToSpeech`: the browser's speech, no plugin.
+  * `CallbackSpeechToText` / `CallbackTextToSpeech` adapters, and
+    `SimulatedSpeech`.
+* `NeuralChatView`: a complete assistant screen:
+  * an orb header and suggestions;
+  * streaming Markdown with reasoning, tool chips and inline generated UI;
+  * error and refusal notices with retry;
+  * a glass composer with voice input and an edge glow;
+  * localizable strings.
+* `RehoboamController` / `RehoboamHud`: the HUD follows an agent, and its
+  `show_on_globe` / `show_hud_ring` tools let the model fly the globe.
+
+### Liquid design
+
+* `NeuralDesign.liquid` (new default) and `NeuralDesign.neon` (the 1.0 look),
+  switchable in `NeuralThemeData`, plus `spectrum` stroke colors.
+* `NeuralLiquidOrb`: a GPU-shader glass sphere with two fluids, a prismatic
+  interface, a chromatic rim, palettes and an app-icon tile. `NeuralOrb` uses
+  it in the liquid design.
+* `NeuralWaveform` (voice ribbons), `NeuralEdgeGlow` (assistant glow) and
+  `LiquidGlassRim` (light on glass edges, used by `NeuralGlassCard`).
+* Gauges, loaders, sparklines, scan rings and the voice wave use iridescent
+  strokes, calmer ticks, soft shadows instead of colored bloom.
+* `NeuralShaders.precache()`; every shader widget has a gradient fallback.
+
+### Behavior changes
+
+* The default design is liquid: cards use a neutral glass with a light rim,
+  glow is softer, and the circular progress no longer draws nodes. Set
+  `NeuralThemeData(design: NeuralDesign.neon)` for the previous look.
+* `AiThinkingAnimation.color` is now nullable. Its default stays white on dark
+  themes; on light themes in the liquid design it is `onSurface`.
+* `NeuralProgress.nodes` is now nullable (12 in neon, 0 in liquid).
+
+### Fixes
+
+* The zoomed HUD globe could leave its frame; markers no longer rebuild at
+  audio rate when driven by a controller.
+
 ## 1.0.0
 
 Big feature release. No breaking API changes: every 0.0.x constructor and

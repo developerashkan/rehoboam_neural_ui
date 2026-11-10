@@ -1,8 +1,9 @@
 # Keep the published archive small: README images are served from GitHub.
 assets/rehoboam_screen_record.gif
 assets/screenshots/tiles/
-assets/screenshots/phone_dark.png
-assets/screenshots/phone_light_rtl.png
+assets/screenshots/phone_*.png
+assets/screenshots/gallery_light.png
+assets/screenshots/gallery_neon.png
 example/build/
 example/tool/
 build/
