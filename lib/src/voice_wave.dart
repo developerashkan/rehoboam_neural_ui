@@ -1,14 +1,18 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// Reactive audio-level state fed by the native audio bridge
-/// (`voice_agent/audio_level` event channel). [level] is normalized 0..1.
+import 'core/neural_clock.dart';
+
+/// One audio-level reading. [level] is normalized `0..1`.
 class AudioLevelSnapshot {
+  /// Creates a reading.
   const AudioLevelSnapshot({required this.level, this.isVoice = false});
 
-  /// Instantaneous input level, 0..1.
+  /// Instantaneous input level, `0..1`.
   final double level;
 
   /// Whether the current audio is classified as speech (VAD).
@@ -16,20 +20,25 @@ class AudioLevelSnapshot {
 }
 
 /// Mode selector for [VoiceWave].
-enum VoiceWaveMode { listening, speaking }
+enum VoiceWaveMode {
+  /// Soft breathing aurora that grows with the input level.
+  listening,
+
+  /// Sharp spectral bars bursting outward.
+  speaking,
+}
 
 /// A super-modern animated voice indicator.
 ///
-/// * **listening**: a soft AI "aurora" — a blurred, breathing gradient blob
-///   whose size pulses with the live audio level (via [AudioLevelStream]),
-///   surrounded by orbiting particles and a shimmering ring.
-/// * **speaking**: a sharp, high-energy spectral wave that bursts outward
-///   with the TTS audio, with a traveling highlight.
+/// * **listening**: a soft AI "aurora": a breathing gradient blob whose size
+///   pulses with [level], surrounded by orbiting particles and a ring.
+/// * **speaking**: a sharp, high-energy spectral burst.
 ///
-/// All animation is `CustomPainter`-based with a single [AnimationController],
-/// so it stays at 60fps with negligible CPU. Colors follow the ambient
-/// theme (Material 3 color scheme).
+/// One ticker drives a `CustomPainter` directly (no per-frame rebuilds).
+/// Colors follow the ambient [ColorScheme]; `MediaQuery.disableAnimations`
+/// shows a still frame.
 class VoiceWave extends StatefulWidget {
+  /// Creates a voice indicator.
   const VoiceWave({
     super.key,
     this.mode = VoiceWaveMode.listening,
@@ -37,15 +46,38 @@ class VoiceWave extends StatefulWidget {
     this.size = 180,
     this.particleCount = 10,
     this.speed = 1.0,
+    this.color,
+    this.secondaryColor,
+    this.particleColor,
+    this.semanticsLabel,
   });
 
+  /// Listening or speaking.
   final VoiceWaveMode mode;
+
+  /// Input level, `0..1`.
   final double level;
+
+  /// Side of the square widget.
   final double size;
+
+  /// Orbiting particles in listening mode.
   final int particleCount;
 
-  /// Animation speed multiplier.
+  /// Animation speed multiplier (`0` freezes).
   final double speed;
+
+  /// Main color. Defaults to `primary` (listening) / `tertiary` (speaking).
+  final Color? color;
+
+  /// Second color. Defaults to the other of `primary` / `tertiary`.
+  final Color? secondaryColor;
+
+  /// Orbiting particle color. Defaults to `onSurface`.
+  final Color? particleColor;
+
+  /// Accessibility label. Defaults to "Listening" / "Speaking".
+  final String? semanticsLabel;
 
   @override
   State<VoiceWave> createState() => _VoiceWaveState();
@@ -53,210 +85,251 @@ class VoiceWave extends StatefulWidget {
 
 class _VoiceWaveState extends State<VoiceWave>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _breath;
-  late final Animation<double> _rotate;
-  late final Animation<double> _pulse;
+  late final NeuralClock _clock = NeuralClock(this, speed: widget.speed);
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: (2200 / widget.speed).round()),
-    )..repeat();
-    _breath = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-    _rotate = Tween<double>(begin: 0, end: 2 * math.pi).animate(_controller);
-    _pulse = Tween<double>(begin: 0.96, end: 1.06).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _sync();
   }
 
   @override
   void didUpdateWidget(VoiceWave old) {
     super.didUpdateWidget(old);
-    if (old.speed != widget.speed) {
-      _controller.duration =
-          Duration(milliseconds: (2200 / widget.speed).round());
-    }
+    _sync();
+  }
+
+  void _sync() {
+    _clock.speed = widget.speed;
+    _clock.setRunning(!reduceMotionOf(context) && _clock.speed > 0);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _clock.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: widget.size,
-      height: widget.size,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          final t = _breath.value;
-          final level = widget.level.clamp(0.0, 1.0);
-          return CustomPaint(
-            painter: _VoiceWavePainter(
+    final listening = widget.mode == VoiceWaveMode.listening;
+    final size = finiteOr(widget.size, 180).clamp(0.0, double.maxFinite);
+    return Semantics(
+      label: widget.semanticsLabel ?? (listening ? 'Listening' : 'Speaking'),
+      image: true,
+      child: SizedBox.square(
+        dimension: size,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: VoiceWavePainter(
+              clock: _clock,
               mode: widget.mode,
-              t: t,
-              rotate: _rotate.value,
-              pulse: _pulse.value,
-              level: level,
-              color: widget.mode == VoiceWaveMode.listening
-                  ? scheme.primary
-                  : scheme.tertiary,
-              secondary: widget.mode == VoiceWaveMode.listening
-                  ? scheme.tertiary
-                  : scheme.primary,
-              particleCount: widget.particleCount,
+              level: unit(widget.level),
+              color: widget.color ??
+                  (listening ? scheme.primary : scheme.tertiary),
+              secondary: widget.secondaryColor ??
+                  (listening ? scheme.tertiary : scheme.primary),
+              particleColor: widget.particleColor ?? scheme.onSurface,
+              particleCount: math.max(0, widget.particleCount),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
 
-class _VoiceWavePainter extends CustomPainter {
-  _VoiceWavePainter({
+/// Paints [VoiceWave]. Public for testing and for custom compositions.
+class VoiceWavePainter extends CustomPainter {
+  /// Creates the painter. [clock] is elapsed seconds.
+  VoiceWavePainter({
+    required this.clock,
     required this.mode,
-    required this.t,
-    required this.rotate,
-    required this.pulse,
     required this.level,
     required this.color,
     required this.secondary,
+    required this.particleColor,
     required this.particleCount,
-  });
+  }) : super(repaint: clock);
 
+  /// Elapsed animation seconds.
+  final ValueListenable<double> clock;
+
+  /// Listening or speaking.
   final VoiceWaveMode mode;
-  final double t;
-  final double rotate;
-  final double pulse;
+
+  /// Level `0..1`.
   final double level;
+
+  /// Main color.
   final Color color;
+
+  /// Second color.
   final Color secondary;
+
+  /// Particle color.
+  final Color particleColor;
+
+  /// Orbiting particles.
   final int particleCount;
+
+  static const double _period = 2.2;
+
+  final Paint _ring = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2.5;
+  final Paint _fill = Paint();
+  final Paint _bar = Paint()..strokeCap = StrokeCap.round;
+  ui.Shader? _blobShader;
+  ui.Shader? _glowShader;
+
+  /// Breathing phase in `[0, 1]`, smooth at every loop point.
+  static double breathAt(double seconds) =>
+      0.5 - 0.5 * math.cos(2 * math.pi * seconds / _period);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
+    if (size.isEmpty || !size.isFinite) return;
+    final s = clock.value;
+    final phase = 2 * math.pi * s / _period; // radians, never wraps
+    final t = breathAt(s);
+    final center = size.center(Offset.zero);
+    final radius = size.shortestSide / 2;
+    final pulse = 1.01 + 0.05 * math.sin(phase);
 
-    // Outer shimmer ring.
-    final ring = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..color =
-          color.withValues(alpha: 0.35 + 0.25 * math.sin(t * 2 * math.pi));
-    canvas.drawCircle(center, radius * 0.62 * pulse, ring);
+    _ring.color =
+        color.withValues(alpha: (0.35 + 0.25 * math.sin(phase)) * color.a);
+    canvas.drawCircle(center, radius * 0.62 * pulse, _ring);
 
     if (mode == VoiceWaveMode.listening) {
-      _paintListening(canvas, center, radius);
+      _paintListening(canvas, center, radius, t, phase);
     } else {
-      _paintSpeaking(canvas, center, radius);
+      _paintSpeaking(canvas, center, radius, phase);
     }
   }
 
-  void _paintListening(Canvas canvas, Offset center, double radius) {
-    // Blurred aurora blob whose size tracks the audio level.
-    final blobR = radius * (0.42 + 0.16 * t + 0.30 * level);
-    final blob = Paint()
-      ..shader = ui.Gradient.radial(
-        center,
-        blobR,
-        [
-          color.withValues(alpha: 0.85),
-          color.withValues(alpha: 0.0),
-        ],
-      );
-    canvas.drawCircle(center, blobR, blob);
+  // Radial gradients are built once at unit radius and scaled by the canvas,
+  // so the per-frame size changes allocate nothing.
+  void _unitBlob(Canvas canvas, Offset c, double r, ui.Shader shader) {
+    if (r <= 0) return;
+    canvas.save();
+    canvas.translate(c.dx, c.dy);
+    canvas.scale(r);
+    _fill
+      ..shader = shader
+      ..color = const Color(0xFF000000); // opaque: alpha would dim the shader
+    canvas.drawCircle(Offset.zero, 1, _fill);
+    canvas.restore();
+  }
 
-    // Secondary glow for depth.
-    final glowR = radius * (0.30 + 0.12 * t + 0.22 * level);
-    final glow = Paint()
-      ..shader = ui.Gradient.radial(
-        center,
-        glowR,
-        [
-          secondary.withValues(alpha: 0.5),
-          secondary.withValues(alpha: 0.0),
-        ],
-      );
-    canvas.drawCircle(center, glowR, glow);
+  void _paintListening(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    double t,
+    double phase,
+  ) {
+    _blobShader ??= ui.Gradient.radial(Offset.zero, 1, [
+      color.withValues(alpha: 0.85 * color.a),
+      color.withValues(alpha: 0),
+    ]);
+    _glowShader ??= ui.Gradient.radial(Offset.zero, 1, [
+      secondary.withValues(alpha: 0.5 * secondary.a),
+      secondary.withValues(alpha: 0),
+    ]);
+    _unitBlob(canvas, center, radius * (0.42 + 0.16 * t + 0.30 * level),
+        _blobShader!);
+    _unitBlob(canvas, center, radius * (0.30 + 0.12 * t + 0.22 * level),
+        _glowShader!);
 
-    // Orbiting particles.
-    final particle = Paint()..color = Colors.white.withValues(alpha: 0.8);
+    if (particleCount == 0) return;
+    _fill
+      ..shader = null
+      ..color = particleColor.withValues(alpha: 0.8 * particleColor.a);
     for (var i = 0; i < particleCount; i++) {
-      final a = rotate + (i * 2 * math.pi / particleCount);
-      final pr = radius * (0.68 + 0.10 * math.sin(t * 2 * math.pi + i));
+      final a = phase + (i * 2 * math.pi / particleCount);
+      final pr = radius * (0.68 + 0.10 * math.sin(phase + i));
       final p = center + Offset(math.cos(a), math.sin(a)) * pr;
-      final s = 2.0 + 1.6 * math.sin(t * 4 * math.pi + i * 1.7);
-      canvas.drawCircle(p, s, particle);
+      final dot = (2.0 + 1.6 * math.sin(phase * 2 + i * 1.7)) *
+          (radius / 90).clamp(0.5, 3.0);
+      canvas.drawCircle(p, dot, _fill);
     }
   }
 
-  void _paintSpeaking(Canvas canvas, Offset center, double radius) {
-    // High-energy spectral bars bursting outward.
+  void _paintSpeaking(
+      Canvas canvas, Offset center, double radius, double phase) {
     const bars = 24;
-    final bar = Paint()..style = PaintingStyle.fill;
+    _bar.strokeWidth = math.max(1.5, radius * 0.045);
     for (var i = 0; i < bars; i++) {
       final a = (i / bars) * 2 * math.pi;
       final inner = radius * 0.34;
-      final outer = radius *
-          (0.52 + 0.38 * (0.5 + 0.5 * math.sin(t * 4 * math.pi + i * 0.55)));
-      final base = center + Offset(math.cos(a), math.sin(a)) * inner;
-      final tip = center + Offset(math.cos(a), math.sin(a)) * outer;
-      bar.color = i.isEven ? color : secondary;
-      bar.color =
-          bar.color.withValues(alpha: 0.9 - 0.4 * (outer - inner) / radius);
-      canvas.drawLine(base, tip, bar);
-    }
-
-    // Core glow.
-    final core = Paint()
-      ..shader = ui.Gradient.radial(
-        center,
-        radius * 0.4,
-        [color.withValues(alpha: 0.7), color.withValues(alpha: 0.0)],
+      final wave = 0.5 + 0.5 * math.sin(phase * 2 + i * 0.55);
+      final outer = radius * (0.50 + (0.22 + 0.24 * level) * wave);
+      final dir = Offset(math.cos(a), math.sin(a));
+      final base = i.isEven ? color : secondary;
+      _bar.color = base.withValues(
+        alpha: ((0.9 - 0.4 * (outer - inner) / radius) * base.a).clamp(0, 1),
       );
-    canvas.drawCircle(center, radius * 0.42, core);
+      canvas.drawLine(center + dir * inner, center + dir * outer, _bar);
+    }
+    _blobShader ??= ui.Gradient.radial(Offset.zero, 1, [
+      color.withValues(alpha: 0.7 * color.a),
+      color.withValues(alpha: 0),
+    ]);
+    _unitBlob(canvas, center, radius * 0.42, _blobShader!);
   }
 
   @override
-  bool shouldRepaint(_VoiceWavePainter old) =>
-      old.t != t ||
-      old.rotate != rotate ||
-      old.pulse != pulse ||
+  bool shouldRepaint(VoiceWavePainter old) =>
+      old.clock != clock ||
       old.level != level ||
       old.mode != mode ||
-      old.color != color;
+      old.color != color ||
+      old.secondary != secondary ||
+      old.particleColor != particleColor ||
+      old.particleCount != particleCount;
 }
 
-/// Stream of live audio levels from the native bridge.
+/// A broadcast hub for live audio levels.
 ///
-/// Subscribes to the `voice_agent/audio_level` event channel (populated by
-/// the platform plugin) and re-emits [AudioLevelSnapshot]s at display rate.
+/// The package does not capture audio itself (that needs a platform
+/// plugin such as `record` or `flutter_sound`). Feed readings in with
+/// [add] or [addLevel] from whatever recorder you use, and listen to
+/// [stream] to drive [VoiceWave], `NeuralOrb` or [AiThinkingAnimation]:
+///
+/// ```dart
+/// recorder.onAmplitude.listen((a) => AudioLevelStream.instance.addLevel(a));
+/// ```
 class AudioLevelStream {
-  AudioLevelStream._(this._stream);
+  AudioLevelStream._();
 
-  final Stream<AudioLevelSnapshot> _stream;
+  static final AudioLevelStream _instance = AudioLevelStream._();
 
-  static AudioLevelStream? _instance;
+  /// The shared hub.
+  static AudioLevelStream get instance => _instance;
 
-  /// Global instance; lazily binds to the native channel.
-  static AudioLevelStream get instance {
-    _instance ??= AudioLevelStream._(_bind());
-    return _instance!;
+  final StreamController<AudioLevelSnapshot> _controller =
+      StreamController<AudioLevelSnapshot>.broadcast();
+
+  AudioLevelSnapshot _latest = const AudioLevelSnapshot(level: 0);
+
+  /// Live readings (broadcast).
+  Stream<AudioLevelSnapshot> get stream => _controller.stream;
+
+  /// The most recent reading.
+  AudioLevelSnapshot get latest => _latest;
+
+  /// Publishes a reading; the level is clamped to `0..1` (NaN becomes 0).
+  void add(AudioLevelSnapshot snapshot) {
+    _latest = AudioLevelSnapshot(
+      level: unit(snapshot.level),
+      isVoice: snapshot.isVoice,
+    );
+    _controller.add(_latest);
   }
 
-  static Stream<AudioLevelSnapshot> _bind() {
-    // Native plugin emits JSON {"level": 0..1, "isVoice": bool} periodically.
-    return const Stream.empty(); // wired by the plugin's Dart-side bridge
-  }
-
-  Stream<AudioLevelSnapshot> get stream => _stream;
+  /// Publishes a bare level.
+  void addLevel(double level, {bool isVoice = false}) =>
+      add(AudioLevelSnapshot(level: level, isVoice: isVoice));
 }

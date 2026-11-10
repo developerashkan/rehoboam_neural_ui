@@ -1,27 +1,46 @@
 name: rehoboam_neural_ui
-description: A high-fidelity "Rehoboam" style neural HUD for Flutter. Features organic particulate animations, 3D Earth globe transformation, and geographic data mapping.
-version: 0.0.7
+description: Sci-fi neural UI for Flutter. Rehoboam HUD ring and 3D globe, AI orb, voice wave, gauges, glowing charts, heatmap, glass cards, scan ring and presence avatars.
+version: 1.0.0
 homepage: https://github.com/developerashkan/rehoboam_neural_ui
 repository: https://github.com/developerashkan/rehoboam_neural_ui
+issue_tracker: https://github.com/developerashkan/rehoboam_neural_ui/issues
+topics:
+  - ui
+  - animation
+  - widget
+  - chart
+  - ai
 screenshots:
-  - description: 'Main Rehoboam neural HUD visualization'
+  - description: 'Neural dashboard gallery in dark mode'
+    path: assets/screenshots/gallery_dark.png
+  - description: 'Neural dashboard gallery in light mode'
+    path: assets/screenshots/gallery_light.png
+  - description: 'Animated tour of the neural widgets'
+    path: assets/screenshots/hero.gif
+  - description: 'Rehoboam HUD ring and 3D Earth globe'
     path: assets/screenshot.png
-  - description: 'Animated demo of the Rehoboam neural HUD transformation'
-    path: assets/rehoboam_screen_record.gif
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
 
 dependencies:
+  dot_globe: ^0.2.0
   flutter:
     sdk: flutter
-  dot_globe: ^0.2.0
 
 dev_dependencies:
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
